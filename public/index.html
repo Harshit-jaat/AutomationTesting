@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Binogi Test Automation</title>
+</head>
+<body>
+    <h2>Upload APK & Start Test</h2>
+    <input type="file" id="apkInput">
+    <button onclick="uploadAPK()">Upload APK</button>
+    <button onclick="startTest()">Start Test</button>
+
+    <h3>Test Execution Status:</h3>
+    <pre id="testOutput"></pre>
+
+    <script>
+        function uploadAPK() {
+            const file = document.getElementById("apkInput").files[0];
+            const formData = new FormData();
+            formData.append("apk", file);
+
+            fetch("/upload", { method: "POST", body: formData })
+                .then(response => response.json())
+                .then(data => alert(data.message))
+                .catch(error => console.error(error));
+        }
+
+        function startTest() {
+            fetch("/test", { method: "POST" })
+                .then(response => response.json())
+                .then(data => console.log(data.message))
+                .catch(error => console.error(error));
+        }
+
+        // WebSocket for Real-time Updates
+        const ws = new WebSocket("ws://localhost:8080");
+
+        ws.onmessage = function(event) {
+            document.getElementById("testOutput").textContent += event.data + "\n";
+        };
+    </script>
+</body>
+</html>
