@@ -2,15 +2,32 @@
 <html lang="en">
 <head>
     <title>Binogi Test Automation</title>
+    <link rel="stylesheet" href="/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
 </head>
 <body>
-    <h2>Upload APK & Start Test</h2>
-    <input type="file" id="apkInput">
-    <button onclick="uploadAPK()">Upload APK</button>
-    <button onclick="startTest()">Start Test</button>
+    <div class="container">
+        <h2>📱 Binogi Test Automation</h2>  
+        
+        <div class="box-1">
 
-    <h3>Test Execution Status:</h3>
-    <pre id="testOutput"></pre>
+        <div class="box-2">
+        <!-- Custom File Input -->
+        <label for="apkInput" class="upload-label">📂 Choose APK</label>
+        <input type="file" id="apkInput">
+
+        <!-- Action Buttons -->
+        <button class="upload-btn" onclick="uploadAPK()">🚀 Upload APK</button>
+        <button class="start-btn" onclick="startTest()">▶ Start Test</button>
+        <button class="stop-btn" onclick="stopTest()">⛔ Stop Test</button>
+        <button class="clear-btn" onclick="clearLogs()">🧹 Clear Logs</button>
+        </div>
+        <div class="box-3">
+        <h3>Test Execution Logs</h3>
+        <pre id="testOutput"></pre>
+        </div>
+        </div>
+    </div>
 
     <script>
         function uploadAPK() {
@@ -25,14 +42,25 @@
         }
 
         function startTest() {
-            fetch("/test", { method: "POST" })
+            fetch("/test/start", { method: "POST" })
                 .then(response => response.json())
                 .then(data => console.log(data.message))
                 .catch(error => console.error(error));
         }
 
+        function stopTest() {
+            fetch("/test/stop", { method: "POST" })
+                .then(response => response.json())
+                .then(data => console.log(data.message))
+                .catch(error => console.error(error));
+        }
+
+        function clearLogs() {
+            document.getElementById("testOutput").textContent = "";
+        }
+
         // WebSocket for Real-time Updates
-        const ws = new WebSocket("ws://localhost:8080");
+        const ws = new WebSocket("ws://localhost:8081");
 
         ws.onmessage = function(event) {
             document.getElementById("testOutput").textContent += event.data + "\n";

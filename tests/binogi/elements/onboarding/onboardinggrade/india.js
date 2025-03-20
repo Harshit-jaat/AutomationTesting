@@ -50,6 +50,10 @@ module.exports = {
             }
         }
     },
+    continue : {
+        uiauto : 'new UiSelector().className("android.view.ViewGroup").instance(12)',
+        path : '//android.view.ViewGroup[@content-desc="GradeListonBoardButton"]/android.view.ViewGroup'
+    }
     
    
 }
