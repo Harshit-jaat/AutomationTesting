@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Test Case Manager</title>
+    <link rel="stylesheet" href="/testcases.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- CSS -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css" />
+
+</head>
+<body>
+    <div class="full-container">
+        <div class="top-bar">
+            <h2>🧪 Test Case Manager</h2>
+            <a href="/" class="back-btn">⬅ Back to Home</a>
+        </div>
+
+        <form id="testForm" class="test-form">
+            <label for="testSelect">Select Test Cases:</label>
+            <select id="testSelect" name="tests" multiple>
+                <% testCases.forEach((test) => { %>
+                    <option value="<%= test.script %>"><%= test.name %></option>
+                <% }) %>
+            </select>
+
+            <button type="submit" class="run-selected-btn">▶ Run Test</button>
+            <button type="button" onclick="stopTest()" class="stop-btn">⛔ Stop Test</button>
+            
+        </form>
+
+        <div class="log-box">
+            <h3>Live Logs</h3>
+            <button onclick="clearLogs()" class="clear-btn">🧹 Clear Logs</button>
+            <pre id="testOutput"></pre>
+            <!-- <button onclick="clearLogs()" class="clear-btn">🧹 Clear Logs</button> -->
+        </div>
+    </div>
+    <!-- JS -->
+<script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
+
+<script>
+    const choices = new Choices('#testSelect', {
+        removeItemButton: true,
+        shouldSort: false,
+        placeholder: true,
+        placeholderValue: 'Select test cases',
+    });
+
+    const ws = new WebSocket(`${location.protocol === "https:" ? "wss" : "ws"}://${location.host}`);
+    let wsBuffer = [];
+    let stopped = false;
+
+    ws.onmessage = (e) => {
+        log(e.data);
+        if (e.data.includes("✅ Test finished") || e.data.includes("⛔ Test stopped by user")) {
+            wsBuffer.push("done");
+        }
+    };
+
+    ws.onopen = () => log("✅ Connected to log stream");
+    ws.onerror = () => log("❌ WebSocket error");
+    ws.onclose = () => log("🔌 WebSocket closed");
+
+    document.getElementById("testForm").addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const selectEl = document.getElementById("testSelect");
+        const selected = Array.from(selectEl.selectedOptions).map(option => option.value);
+
+        if (selected.length === 0) {
+            alert("Please select at least one test case.");
+            return;
+        }
+
+        stopped = false; // reset stop flag
+
+        for (const script of selected) {
+            if (stopped) {
+                log("⛔ Test execution stopped by user.");
+                break;
+            }
+
+            log(`▶ Starting test: ${script}`);
+            wsBuffer = [];
+
+            const res = await fetch("/test/start", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ script })
+            });
+
+            const data = await res.json();
+            log(data.message);
+
+            await waitForTestEnd();
+        }
+    });
+
+    function waitForTestEnd(timeout = 300000) {
+        return new Promise((resolve, reject) => {
+            const start = Date.now();
+            const check = () => {
+                if (wsBuffer.includes("done")) return resolve();
+                if (Date.now() - start > timeout) return reject("⏰ Test timeout");
+                if (stopped) return resolve(); // exit early if stopped
+                setTimeout(check, 500);
+            };
+            check();
+        });
+    }
+
+    function stopTest() {
+        fetch("/test/stop", {
+            method: "POST"
+        })
+        .then(res => res.json())
+        .then(data => {
+            log(data.message);
+            stopped = true;
+        })
+        .catch(err => {
+            log("❌ Failed to stop test");
+            console.error(err);
+        });
+    }
+
+    function log(msg) {
+        document.getElementById("testOutput").textContent += msg + "\n";
+    }
+
+    function clearLogs() {
+        document.getElementById("testOutput").textContent = "";
+    }
+</script>
+</body>
+</html>

@@ -1,20 +1,27 @@
 const path = require("path");
-const { getLatestAPK } = require("../tests/utils/helpers");
+const { getLatestAPK, getConnectedDevice } = require("../tests/utils/helpers");
+
+const deviceId = getConnectedDevice();
+
+if (!deviceId) {
+    throw new Error("❌ No connected Android device found. Please connect one before running tests.");
+}
 
 module.exports = {
     server: {
         hostname: "localhost",
         port: 4723,
-        path: "/" // Ensure this is correct for Appium 2.x
+        path: "/" // Appium 2.x base path
     },
     capabilities: {
         platformName: "Android",
-        "appium:deviceName": "TRJDU19404007242",  // Update based on adb devices
-        "appium:app": getLatestAPK(), // Dynamically fetch latest APK
+        "appium:deviceName": deviceId,
+        "appium:udid": deviceId, // optional but recommended
+        "appium:app": getLatestAPK(),
         "appium:automationName": "UiAutomator2",
-        "appium:noReset": false,  // Clears app data but does NOT uninstall
-        "appium:fullReset": false, // Prevents reinstalling the app
-        "appium:newCommandTimeout": 300, // Prevents timeout issues
+        "appium:noReset": false,
+        "appium:fullReset": false,
+        "appium:newCommandTimeout": 300
     }
 };
 

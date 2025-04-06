@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Binogi Test Automation</title>
+    <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+    <div class="container">
+        <h2>📱 Binogi Test Automation</h2>
+
+        <div class="box-2">
+            <label for="apkInput" class="upload-label">📂 Choose APK</label>
+            <input type="file" id="apkInput">
+            <button class="upload-btn" onclick="uploadAPK()">🚀 Upload APK</button>
+        </div>
+
+        <div class="box-2">
+            <a href="/testcases" class="view-tests-btn">🧪 View and Run Test Cases</a>
+        </div>
+    </div>
+
+    <script>
+        function uploadAPK() {
+            const file = document.getElementById("apkInput").files[0];
+            const formData = new FormData();
+            formData.append("apk", file);
+
+            fetch("/upload", {
+                method: "POST",
+                body: formData
+            })
+            .then(res => res.json())
+            .then(data => alert(data.message))
+            .catch(console.error);
+        }
+    </script>
+</body>
+</html>

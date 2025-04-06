@@ -1,59 +1,72 @@
 const express = require("express");
 const { exec } = require("child_process");
-const WebSocket = require("ws");
+const path = require("path");
+const { broadcastMessage, setProcess } = require("../websocket/wsServer");
 
 const router = express.Router();
 let testProcess = null;
 
-// WebSocket Server for real-time updates
-const wss = new WebSocket.Server({ port: 8081 });
-console.log("✅ WebSocket Server running on ws://localhost:8081");
-
-function broadcastMessage(message) {
-    wss.clients.forEach(client => {
-        if (client.readyState === WebSocket.OPEN) {
-            client.send(message);
-        }
-    });
-}
-
-// Start Onboarding Test API
+// Start any test by path
 router.post("/start", (req, res) => {
+    
     if (testProcess) {
-        return res.status(400).json({ message: "Test is already running" });
+        return res.status(400).json({ message: "⚠️ A test is already running" });
     }
 
-    const testScript = "node tests/binogi/testcases/onboarding/onboarding.js";
-    testProcess = exec(testScript);
+    const scriptPath = req.body?.script;
+    if (!scriptPath) {
+        return res.status(400).json({ message: "❌ No script specified" });
+    }
+
+    const resolvedScript = path.resolve(__dirname, "../", scriptPath);
+    testProcess = exec(`node "${resolvedScript}"`);
+
+    setProcess(testProcess);
 
     testProcess.stdout.on("data", (data) => {
-        console.log(`📢 Test Output: ${data}`);
-        broadcastMessage(data);
+        const cleanLines = data
+            .toString()
+            .split("\n")
+            .filter(line => {
+                return (
+                    line.includes("Clicked") ||
+                    line.includes("Element found") ||
+                    line.includes("✅") ||
+                    line.includes("❌") ||
+                    line.includes("Selected") ||
+                    line.includes("Test finished") ||
+                    line.includes("Waiting") ||
+                    line.includes("Continuing")
+                );
+            });
+    
+        cleanLines.forEach(line => broadcastMessage(`📢 ${line}`));
     });
 
     testProcess.stderr.on("data", (error) => {
-        console.error(`❌ Test Error: ${error}`);
         broadcastMessage(`❌ ${error}`);
     });
 
     testProcess.on("exit", (code) => {
-        broadcastMessage(`🚀 Test finished with exit code ${code}`);
+        broadcastMessage(`✅ Test finished with exit code ${code}`);
         testProcess = null;
+        setProcess(null);
     });
 
-    res.json({ message: "✅ Onboarding Test Started!" });
+    res.json({ message: `🚀 Started test: ${scriptPath}` });
 });
 
-// Stop Test API
+// Stop currently running test
 router.post("/stop", (req, res) => {
     if (!testProcess) {
-        return res.status(400).json({ message: "No test is currently running" });
+        return res.status(400).json({ message: "⚠️ No test is running" });
     }
 
     testProcess.kill("SIGTERM");
     testProcess = null;
-    broadcastMessage("🚨 Test Stopped by user.");
-    res.json({ message: "⛔ Test Stopped!" });
+    setProcess(null);
+    broadcastMessage("⛔ Test stopped by user.");
+    res.json({ message: "⛔ Test Stopped" });
 });
 
 module.exports = router;
