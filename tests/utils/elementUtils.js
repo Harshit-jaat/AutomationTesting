@@ -2,6 +2,9 @@ const DEFAULT_TIMEOUT = 5000;
 const RETRY_ATTEMPTS = 3;
 const RETRY_DELAY = 2000;
 
+const { broadcastMessage } = require("../../websocket/wsServer");
+
+
 function wait(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
 }
@@ -68,10 +71,33 @@ async function getText(driver, selector, label = null) {
     });
 }
 
+// utils/errorUtils.js
+function handleTestError(error, testName = "Unknown Test") {
+    const msg = error.message || "Unknown error";
+    const trace = error.stack || "No stack trace available";
+
+    let friendly = "💥 Unexpected error occurred.";
+    if (msg.includes("NoSuchElement")) {
+        friendly = "❗ UI Element not found.";
+    } else if (msg.includes("timeout")) {
+        friendly = "⏳ Timeout while waiting for element.";
+    }
+
+    broadcastMessage([
+        `🚨 ${testName} Failed`,
+        `🧾 Message: ${friendly}`,
+        `🧠 Raw Error: ${msg}`,
+        `📄 Stack Trace:\n${trace}`
+    ].join("\n"));
+}
+
+
+
 module.exports = {
     waitForElement,
     clickElement,
     enterText,
     getText,
-    retryAction // expose if needed elsewhere
+    retryAction,
+    handleTestError
 };

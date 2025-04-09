@@ -2,6 +2,12 @@ const express = require("express");
 const { exec } = require("child_process");
 const path = require("path");
 const { broadcastMessage, setProcess } = require("../websocket/wsServer");
+const {
+    pullTracesFile,
+    checkANRFromFileAndSave
+} = require("../tests/utils/anrUtils");
+const { streamGrowthExperimentLogs } = require("../tests/utils/growthbookUtils");
+
 
 const router = express.Router();
 let testProcess = null;
@@ -36,7 +42,9 @@ router.post("/start", (req, res) => {
                     line.includes("Selected") ||
                     line.includes("Test finished") ||
                     line.includes("Waiting") ||
-                    line.includes("Continuing")
+                    line.includes("Continuing") ||
+                    line.includes("🧪")
+
                 );
             });
     
@@ -44,13 +52,42 @@ router.post("/start", (req, res) => {
     });
 
     testProcess.stderr.on("data", (error) => {
-        broadcastMessage(`❌ ${error}`);
+        const formatted = error.toString().trim();
+        console.error("🔴 STDERR:", formatted);
+        broadcastMessage(`❌ Script Error Output:\n${formatted}`);
     });
 
-    testProcess.on("exit", (code) => {
-        broadcastMessage(`✅ Test finished with exit code ${code}`);
-        testProcess = null;
-        setProcess(null);
+
+
+    // 🌟 Start logcat watcher for experiment logs
+    logcatStream = streamGrowthExperimentLogs((logLine) => {
+        broadcastMessage(`🧪 ${logLine}`);
+    });
+    
+
+    testProcess.on("exit", async (code) => {
+        const testName = path.basename(scriptPath).replace(".js", "");
+    
+        pullTracesFile((err, tracePath) => {
+            if (err) {
+                broadcastMessage("⚠️ Could not pull ANR traces");
+            } else {
+                const hasAnr = checkANRFromFileAndSave(tracePath, "com.binogi", testName);
+                if (hasAnr) {
+                    broadcastMessage(`❌ ANR Detected! Saved to logs/anr-traces/${testName}-<timestamp>.txt`);
+                } else {
+                    broadcastMessage(`✅ Test finished with exit code ${code}`);
+                }
+            }
+            // 🧼 Kill logcat stream when test ends
+        if (logcatStream) {
+            logcatStream.kill();
+            logcatStream = null;
+        }
+    
+            testProcess = null;
+            setProcess(null);
+        });
     });
 
     res.json({ message: `🚀 Started test: ${scriptPath}` });

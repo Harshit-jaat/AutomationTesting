@@ -3,13 +3,20 @@ const path = require("path");
 const {
     clickElement,
     waitForElement,
+    handleTestError
 } = require("../../../utils/elementUtils");
+const { 
+    readExperimentVariantFromLog
+ } = require("../../../utils/growthbookUtils");
 
 const appiumConfig = require(path.resolve(__dirname, "../../../../config/appium.config"));
 const onboardingIntro = require(path.resolve(__dirname, "../../elements/onboarding/onboardingintro"));
 const onboardingRole = require(path.resolve(__dirname, "../../elements/onboarding/onboardingrole"));
 const onboardingGrade = require(path.resolve(__dirname, "../../elements/onboarding/onboardinggrade/india"));
 const onboardingSubject = require(path.resolve(__dirname, "../../elements/onboarding/onboardingsubject"));
+const onboardingSchool = require(path.resolve(__dirname, "../../elements/onboarding/onboardingschool"));
+
+let locationPopupShown = false;
 
 async function runNormalOnboardingTest() {
     const driver = await remote({
@@ -33,24 +40,47 @@ async function runNormalOnboardingTest() {
         await clickElement(driver, onboardingIntro.letsgo.path);
         console.log("✅ Clicked 'Let's Go'");
 
-        //✅ Step 2: Select all roles dynamically
-        const roleKeys = Object.keys(onboardingRole).filter(key =>
-            key !== "continue" && key !== "backbutton"
-        );
+        // Select Role
+        await driver.$(onboardingRole.teacher.path).then(el => el.click());
+        await driver.$(onboardingRole.continue.path).then(el => el.click());
+        console.log("✅ Selected Role: Teacher");
 
-        for (let i = 0; i < roleKeys.length; i++) {
-            const roleKey = roleKeys[i];
-            await clickElement(driver, onboardingRole[roleKey].path);
-            console.log(`✅ Selected Role: ${roleKey.toUpperCase()}`);
-
-            await clickElement(driver, onboardingRole.continue.path);
-            console.log("✅ Clicked Continue after role selection");
-
-            if (i !== roleKeys.length - 1) {
-                await clickElement(driver, onboardingRole.backbutton.path);
-                console.log("🔙 Back to Role Selection");
+        const locationPopup = await driver.$(onboardingSchool.locationPrompt.path);
+        if (await locationPopup.isExisting()) {
+            if (!locationPopupShown) {
+                await clickElement(driver, onboardingSchool.whileUsingApp.path);
+                locationPopupShown = true;
+                console.log("🌍 Location permission allowed");
+            } else {
+                throw new Error("❌ Location permission popup appeared again! It should only appear once.");
             }
         }
+
+        console.log("🧪 Checking GrowthBook variant from logs...");
+        const variant = await readExperimentVariantFromLog();
+        console.log(`🧪 Experiment variant detected: ${variant}`);
+
+        // Wait for school input
+        // const schoolInputFinal = await waitForElement(driver, onboardingSchool.schoolSearchInput.path, 5000);
+
+        if (variant === "b") {
+            // Variant B should NOT show skip
+            const skipExists = await driver.$(onboardingSchool.skipQuestionText.path).isExisting();
+            if (skipExists) {
+                throw new Error("❌ 'Skip this question' is visible but should be hidden for Variant B");
+            }
+            console.log("✅ Verified: 'Skip this question' is hidden for Variant B");
+
+            await clickElement(driver, onboardingSchool.continueButton.path);
+            console.log("✅ Clicked Continue on school page");
+
+        } else {
+            // Variant A or fallback shows skip
+            await clickElement(driver, onboardingSchool.skipQuestionText.path);
+            console.log("✅ Clicked 'Skip this question'");
+        }
+
+        
 
         //✅ Step 3: Select all grades dynamically
         const schoolKeys = Object.keys(onboardingGrade).filter(key => onboardingGrade[key].grades);
@@ -101,8 +131,9 @@ async function runNormalOnboardingTest() {
         console.log("🏠 Reached Home Screen");
 
     } catch (error) {
-        console.error("❌ Error during normal onboarding flow:", error.message);
-    } finally {
+        handleTestError(error, "Normal Onboarding Test");
+    }
+     finally {
         await driver.deleteSession();
         console.log("✅ Session Closed");
     }

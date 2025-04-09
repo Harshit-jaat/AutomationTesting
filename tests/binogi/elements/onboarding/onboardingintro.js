@@ -10,8 +10,8 @@ module.exports = {
         uiauto : 'new UiSelector().resourceId("android:id/button2")'
     },
     letsgo : {
-        path : '//android.view.ViewGroup[@content-desc="GETSTARTED"]/android.view.ViewGroup',
-        uiauto : 'new UiSelector().className("android.view.ViewGroup").instance(11)'
+        path: '//android.view.ViewGroup[@content-desc="LET\'S GO"]/android.view.ViewGroup',
+        uiauto: 'new UiSelector().description("LET\'S GO")'
     },
     login : {
         path : '//android.widget.TextView[@text="LOG IN"]',

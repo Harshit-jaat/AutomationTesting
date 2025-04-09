@@ -2,9 +2,11 @@
   "dependencies": {
     "appium": "^2.17.1",
     "child_process": "^1.0.2",
+    "ejs": "^3.1.10",
     "express": "^4.21.2",
     "multer": "^1.4.5-lts.1",
     "node": "^20.19.0",
+    "nodemon": "^3.1.9",
     "webdriverio": "^9.12.0",
     "websocket": "^1.0.35"
   },
@@ -12,10 +14,10 @@
   "version": "1.0.0",
   "main": "server.js",
   "scripts": {
-  "start": "nodemon server.js",
-  "appium": "appium --config .appiumrc.js",                    
-  "dev": "concurrently \"npm run appium\" \"npm run start\""
-},
+    "start": "nodemon server.js",
+    "appium": "appium --config .appiumrc.js",
+    "dev": "concurrently \"npm run appium\" \"npm run start\""
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/Harshit-jaat/Automation-Testing.git"
@@ -31,7 +33,7 @@
   "homepage": "https://github.com/Harshit-jaat/Automation-Testing#readme",
   "description": "",
   "devDependencies": {
-    "appium-uiautomator2-driver": "^4.1.2",
+    "appium-uiautomator2-driver": "^4.1.5",
     "appium-xcuitest-driver": "^8.4.3",
     "concurrently": "^9.1.2"
   }

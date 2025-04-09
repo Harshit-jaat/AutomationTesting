@@ -21,7 +21,9 @@ module.exports = {
         "appium:automationName": "UiAutomator2",
         "appium:noReset": false,
         "appium:fullReset": false,
-        "appium:newCommandTimeout": 300
+        "appium:newCommandTimeout": 300,
+        "appium:androidInstallTimeout": 300000
+
     }
 };
 
