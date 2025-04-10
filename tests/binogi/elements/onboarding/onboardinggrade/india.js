@@ -4,6 +4,9 @@ module.exports = {
     path: "//com.horcrux.svg.CircleView",
     uiauto: 'new UiSelector().className("com.horcrux.svg.CircleView")',
   },
+  schoolname:{
+    path: '//android.widget.TextView[@text="Kendriya Vidyalaya No. 3, Ambala, Haryana, India"]'
+  },
   lowerprimaryschool: {
     text: "LOWER PRIMARY SCHOOL",
     uiauto: 'new UiSelector().description("LOWER PRIMARY SCHOOL")',

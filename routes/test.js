@@ -9,6 +9,9 @@ const {
 const {
   streamGrowthExperimentLogs,
 } = require("../tests/utils/growthbookUtils");
+const { spawn } = require("child_process");
+
+
 
 const router = express.Router();
 let testProcess = null;
@@ -25,7 +28,7 @@ router.post("/start", (req, res) => {
   }
 
   const resolvedScript = path.resolve(__dirname, "../", scriptPath);
-  testProcess = exec(`node "${resolvedScript}"`);
+  testProcess = spawn("node", [resolvedScript]);
 
   setProcess(testProcess);
 
@@ -36,6 +39,7 @@ router.post("/start", (req, res) => {
       .filter((line) => {
         return (
           line.includes("Clicked") ||
+          line.includes("TestCase-") ||
           line.includes("Element found") ||
           line.includes("✅") ||
           line.includes("❌") ||
@@ -45,7 +49,9 @@ router.post("/start", (req, res) => {
           line.includes("Continuing") ||
           line.includes("🧪") ||
           line.includes("⚠️") ||
-          line.includes("variant") 
+          line.includes("🔁") ||
+          line.includes("📋") ||
+          line.includes("🧪 Detected ") 
         );
       });
 
@@ -55,7 +61,7 @@ router.post("/start", (req, res) => {
   testProcess.stderr.on("data", (error) => {
     const formatted = error.toString().trim();
     console.error("🔴 STDERR:", formatted);
-    broadcastMessage(`❌ Script Error Output:\n${formatted}`);
+    // broadcastMessage(`❌ Script Error Output:\n${formatted}`);
   });
 
   // 🌟 Start logcat watcher for experiment logs
@@ -68,7 +74,7 @@ router.post("/start", (req, res) => {
 
     pullTracesFile((err, tracePath) => {
       if (err) {
-        broadcastMessage("⚠️ Could not pull ANR traces");
+        // broadcastMessage("⚠️ Could not pull ANR traces");
       } else {
         const hasAnr = checkANRFromFileAndSave(
           tracePath,
