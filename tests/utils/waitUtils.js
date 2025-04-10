@@ -3,7 +3,7 @@
  * @param {number} milliseconds - Time to wait.
  */
 async function wait(milliseconds) {
-    return new Promise(resolve => setTimeout(resolve, milliseconds));
+  return new Promise((resolve) => setTimeout(resolve, milliseconds));
 }
 
 /**
@@ -14,17 +14,17 @@ async function wait(milliseconds) {
  * @param {number} timeout - Max time to wait (default: 5000ms).
  */
 async function waitForText(driver, selector, expectedText, timeout = 5000) {
-    const element = await driver.$(selector);
-    await element.waitUntil(
-        async () => (await element.getText()) === expectedText,
-        {
-            timeout,
-            timeoutMsg: `Expected text "${expectedText}" not found in ${timeout}ms`
-        }
-    );
+  const element = await driver.$(selector);
+  await element.waitUntil(
+    async () => (await element.getText()) === expectedText,
+    {
+      timeout,
+      timeoutMsg: `Expected text "${expectedText}" not found in ${timeout}ms`,
+    },
+  );
 }
 
 module.exports = {
-    wait,
-    waitForText
+  wait,
+  waitForText,
 };

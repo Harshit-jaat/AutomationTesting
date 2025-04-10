@@ -1,14 +1,14 @@
 {
-    "watch": [
-      "server.js",
-      "routes",
-      "views",
-      "public",
-      "websocket",
-      "config",
-      "tests"
-    ],
-    "ext": "js,ejs,css,json",
-    "ignore": ["uploads/", "logs/"],
-    "exec": "node server.js"
-  }
+  "watch": [
+    "server.js",
+    "routes",
+    "views",
+    "public",
+    "websocket",
+    "config",
+    "tests"
+  ],
+  "ext": "js,ejs,css,json",
+  "ignore": ["uploads/", "logs/"],
+  "exec": "node server.js"
+}
