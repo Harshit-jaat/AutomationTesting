@@ -50,6 +50,8 @@ router.post("/start", (req, res) => {
           line.includes("🧪") ||
           line.includes("⚠️") ||
           line.includes("🔁") ||
+          line.includes("🏠") ||
+          line.includes("🟢") ||
           line.includes("📋") ||
           line.includes("🧪 Detected ") 
         );

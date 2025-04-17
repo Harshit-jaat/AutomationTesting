@@ -155,29 +155,22 @@
 const { remote } = require("webdriverio");
 const path = require("path");
 const {
-  clickElement,
   waitForElement,
+  clickElement,
+  enterText,
+  getText,
+  retryAction,
   handleTestError,
+  restartDriver,
+  clickFirstAvailableElement,
 } = require("../../../utils/elementUtils");
 
-const appiumConfig = require(
-  path.resolve(__dirname, "../../../../config/appium.config"),
-);
-const onboardingIntro = require(
-  path.resolve(__dirname, "../../elements/onboarding/onboardingintro"),
-);
-const onboardingRole = require(
-  path.resolve(__dirname, "../../elements/onboarding/onboardingrole"),
-);
-const onboardingGrade = require(
-  path.resolve(__dirname, "../../elements/onboarding/onboardinggrade/india"),
-);
-const onboardingSubject = require(
-  path.resolve(__dirname, "../../elements/onboarding/onboardingsubject"),
-);
-const onboardingSchool = require(
-  path.resolve(__dirname, "../../elements/onboarding/onboardingschool"),
-);
+const appiumConfig = require(path.resolve(__dirname, "../../../../config/appium.config"));
+const onboardingIntro = require(path.resolve(__dirname, "../../elements/onboarding/onboardingintro"));
+const onboardingRole = require(path.resolve(__dirname, "../../elements/onboarding/onboardingrole"));
+const onboardingGrade = require(path.resolve(__dirname, "../../elements/onboarding/onboardinggrade/india"));
+const onboardingSubject = require(path.resolve(__dirname, "../../elements/onboarding/onboardingsubject"));
+const onboardingSchool = require(path.resolve(__dirname, "../../elements/onboarding/onboardingschool"));
 
 let locationPopupShown = false;
 
@@ -194,13 +187,17 @@ async function runNormalOnboardingTest() {
     console.log("🚀 Starting Normal Onboarding Flow");
 
     // Step 1: Allow pop-up and press Let's Go
-    const allowPopup = await driver.$(onboardingIntro.allowpopup.path);
-    if (await allowPopup.isExisting()) {
-      await clickElement(driver, onboardingIntro.allow.path);
-      console.log("✅ Clicked Allow button");
-    }
+    let allowPopup;
+          if ( allowPopup = await waitForElement(driver, onboardingIntro.allow.path)) {
+            // console.log("✅ found popup");
+            await clickElement(driver, onboardingIntro.allow.path);
+            
+          }
+          else{
+            console.log("⚠️ no popup found");
+          }
 
-    await clickElement(driver, onboardingIntro.letsgo.path);
+    await clickFirstAvailableElement(driver, onboardingIntro.letsgo, "Let's Go");
     console.log("✅ Clicked 'Let's Go'");
 
     //✅ Step 2: Select all roles dynamically

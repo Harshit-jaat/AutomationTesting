@@ -1,5 +1,5 @@
 const DEFAULT_TIMEOUT = 5000;
-const RETRY_ATTEMPTS = 3;
+const RETRY_ATTEMPTS = 6;
 const RETRY_DELAY = 2000;
 const fs = require("fs");
 const path = require("path");
@@ -15,31 +15,35 @@ function wait(ms) {
 
 async function retryAction(
   actionFn,
-  { retries = RETRY_ATTEMPTS, delay = RETRY_DELAY, label = "" } = {},
+  {
+    retries = RETRY_ATTEMPTS,
+    delay = RETRY_DELAY,
+    label = "",
+    fastRetries = 3, // how many fast (no-delay) attempts first
+  } = {},
 ) {
   let attempt = 0;
 
   while (attempt < retries) {
     try {
       const result = await actionFn();
-      // ✅ DON'T log success here. Let the test control that.
       return result;
     } catch (err) {
       attempt++;
-      console.warn(
-        `⚠️ ${label || "Action"} failed (attempt ${attempt}): ${err.message}`,
-      );
+      console.warn(`⚠️ ${label || "Action"} failed (attempt ${attempt}): ${err.message}`);
+
       if (attempt < retries) {
-        await wait(delay);
+        if (attempt >= fastRetries) {
+          await wait(delay); // use delay only after fast retries are exhausted
+        }
       } else {
-        console.error(
-          `❌ ${label || "Action"} failed after ${retries} attempts`,
-        );
-        throw err; // propagate final failure
+        console.error(`❌ ${label || "Action"} failed after ${retries} attempts`);
+        throw err;
       }
     }
   }
 }
+
 
 // 🧠 Retry-enabled element fetch with display check
 async function waitForElement(driver, selector, timeout = DEFAULT_TIMEOUT) {
@@ -55,6 +59,23 @@ async function waitForElement(driver, selector, timeout = DEFAULT_TIMEOUT) {
   );
 }
 
+async function clickFirstAvailableElement(driver, selectorArray, label = 'Element') {
+  for (const selector of selectorArray) {
+    try {
+      const el = await waitForElement(driver, selector.path, 3000); // try each one fast
+      if (await el.isExisting()) {
+        await el.click();
+        console.log(`✅ Clicked ${label}: ${selector.path}`);
+        return;
+      }
+    } catch (_) {
+      // Skip if not found
+    }
+  }
+  throw new Error(`❌ None of the selectors for "${label}" were found.`);
+}
+
+
 // 🔁 Retry-enabled click
 async function clickElement(driver, selector) {
   return await retryAction(
@@ -64,7 +85,7 @@ async function clickElement(driver, selector) {
     },
     {
       label: `Click ${selector}`,
-      retries: 3,
+      retries: 6,
       delay: 2000,
     },
   );
@@ -133,4 +154,5 @@ module.exports = {
   retryAction,
   handleTestError,
   restartDriver,
+  clickFirstAvailableElement,
 };
