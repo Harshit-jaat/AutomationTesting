@@ -44,6 +44,39 @@ async function retryAction(
   }
 }
 
+async function scrollInElement(driver, element, direction = 'down', scrollAmount = 300) {
+  const { x, y, width, height } = await element.getRect();
+
+  let startX, startY, endX, endY;
+  switch (direction) {
+    case 'down':
+      startX = x + width / 2;
+      startY = y + height * 0.8;
+      endX = startX;
+      endY = startY - scrollAmount;
+      break;
+    case 'up':
+      startX = x + width / 2;
+      startY = y + height * 0.2;
+      endX = startX;
+      endY = startY + scrollAmount;
+      break;
+    default:
+      throw new Error(`Unsupported direction: ${direction}`);
+  }
+
+  await driver.touchPerform([
+    { action: 'press', options: { x: startX, y: startY } },
+    { action: 'wait', options: { ms: 500 } },
+    { action: 'moveTo', options: { x: endX, y: endY } },
+    { action: 'release' }
+  ]);
+
+  await driver.pause(1000);
+}
+
+
+
 
 // 🧠 Retry-enabled element fetch with display check
 async function waitForElement(driver, selector, timeout = DEFAULT_TIMEOUT) {
@@ -65,7 +98,7 @@ async function clickFirstAvailableElement(driver, selectorArray, label = 'Elemen
       const el = await waitForElement(driver, selector.path, 3000); // try each one fast
       if (await el.isExisting()) {
         await el.click();
-        console.log(`✅ Clicked ${label}: ${selector.path}`);
+        console.log(`✅ Clicked ${label}`);
         return;
       }
     } catch (_) {
@@ -86,7 +119,6 @@ async function clickElement(driver, selector) {
     {
       label: `Click ${selector}`,
       retries: 6,
-      delay: 2000,
     },
   );
 }
@@ -155,4 +187,5 @@ module.exports = {
   handleTestError,
   restartDriver,
   clickFirstAvailableElement,
+  scrollInElement,
 };

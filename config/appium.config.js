@@ -28,5 +28,15 @@ module.exports = {
     "appium:fullReset": false,
     "appium:newCommandTimeout": 300,
     "appium:androidInstallTimeout": 300000,
+    "appium:autoGrantPermissions": true,
   },
 };
+
+
+//for inspector capabilities
+// {
+    // "platformName": "Android",
+    // "deviceName": "TRJDU19404007242",  
+    // "automationName": "UiAutomator2",
+    // "noReset": true
+//   }

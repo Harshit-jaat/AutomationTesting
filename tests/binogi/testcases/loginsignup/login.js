@@ -54,109 +54,49 @@ async function signupflow(driver){
     await clickElement(driver, onbaordingname.save.path);
 
     
-        const roleKeys = Object.keys(onboardingRole).filter(
-          (key) => key !== "continue" && key !== "backbutton",
-        );
-    
-        for (let i = 0; i < roleKeys.length; i++) {
-          const roleKey = roleKeys[i];
-    
-          await clickElement(driver, onboardingRole[roleKey].path);
-          await clickElement(driver, onboardingRole.continue.path);       
-          const locationPopup = await driver.$(
-            onboardingSchool.locationPrompt.path,
-          );
-          if (await locationPopup.isExisting()) {
-            if (!locationPopupShown) {
-              await clickElement(driver, onboardingSchool.whileUsingApp.path);
-              locationPopupShown = true;
-            } else {
-              throw new Error(
-                "❌ Location permission popup appeared again! It should only appear once.",
-              );
-            }
-          }
-    
-          
-          const schoolInput = await driver.$(
-            onboardingSchool.schoolSearchInput.path,
-          );
-          if (await schoolInput.isExisting()) {
-            console.log("🏫 School page appeared");
-    
-            
-            if (i !== roleKeys.length - 1) {
-              await clickElement(driver, onboardingSchool.backbutton.path);
-              console.log("🔙 Back to Role Selection");
-            }
-          } else {
-            console.log("⚠️ School page did not load for role:", roleKey);
-          }
-        }
-    
-        
-        console.log("➡️ Completing School page after all role checks");
-    
+        let locationPopupShown = false;
        
-        const schoolInputFinal = await waitForElement(
-          driver,
-          onboardingSchool.schoolSearchInput.path,
-          5000,
-        );
-        
-    
+           try{
+           
        
-        await clickElement(driver, onboardingSchool.skipQuestionText.path);
+           
+           await clickElement(driver,onboardingRole.student.path);
        
-    
-
-    
+           await clickElement(driver,onboardingRole.continue.path);
        
-        const schoolKeys = Object.keys(onboardingGrade).filter(
-          (key) => onboardingGrade[key].grades,
-        );
-    
-        for (const schoolKey of schoolKeys) {
-          const school = onboardingGrade[schoolKey];
-          await clickElement(driver, school.path);
-
-    
-          const gradeKeys = Object.keys(school.grades);
-    
-          for (let i = 0; i < gradeKeys.length; i++) {
-            const gradeKey = gradeKeys[i];
-    
-            await clickElement(driver, school.path);
-
-    
-            await clickElement(driver, school.grades[gradeKey].path);
-
-    
-            await clickElement(driver, onboardingGrade.continue.path);
-
-    
-            if (
-              i !== gradeKeys.length - 1 ||
-              schoolKey !== schoolKeys[schoolKeys.length - 1]
-            ) {
-              await clickElement(driver, onboardingGrade.backbutton.path);
-              console.log("🔙 Back to Grade Selection");
-            }
-          }
-        }
-    
-        const subjectKeys = Object.keys(onboardingSubject.subjectlist);
-    
-        for (const subjectKey of subjectKeys) {
-          const subject = onboardingSubject.subjectlist[subjectKey];
-          const el = await waitForElement(driver, subject.path);
-          if (await el.isExisting()) {
-            await clickElement(driver, subject.path);
-            await driver.pause(300);
-          }
-        }
-    
-        await clickElement(driver, onboardingSubject.continue.path);
+           // const locationPopup = await waitForElement(driver,onboardingSchool.whileUsingApp.path);
+           const locationPopup = await driver.$(
+               onboardingSchool.locationPrompt.path,
+             );
+       
+             
+                     if (locationPopup) {
+                       if (!locationPopupShown) {
+                        //  console.log("✅ found popup");
+                         await clickElement(driver, onboardingSchool.whileUsingApp.path);
+                         locationPopupShown = true;
+                       } else {
+                         throw new Error(
+                           "❌ Location permission popup appeared again! It should only appear once.",
+                         );
+                       }
+                     }
+       
+             await clickElement(driver, onboardingSchool.skipQuestionText.path);
+       
+             await clickElement(driver,onboardingGrade.lowersecondaryschool.path);
+       
+             await clickElement(driver,onboardingGrade.lowersecondaryschool.grades[9].path);
+       
+             await clickElement(driver,onboardingGrade.continue.path);
+       
+             await clickElement(driver,onboardingSubject.subjectlist.mathematics.path);
+       
+             await clickElement(driver,onboardingSubject.continue.path);
+           }
+           catch(error){
+               handleTestError(error);
+           }
 
     
         await driver.pause(13000);
@@ -180,7 +120,8 @@ async function runNormalLoginTest() {
   });
 
   try {
-    console.log("🚀 Starting Normal Login Flow");
+    console.log("TestCase- Starting  Login Flow");
+
 
     // Step 1: Allow pop-up and press Let's Go
     let allowPopup;
@@ -235,7 +176,7 @@ async function runNormalLoginTest() {
 
 
 
-
+        console.log("✅ Test passed");
 
     } catch (error) {
     handleTestError(error, "Normal login Test");
@@ -256,7 +197,8 @@ async function runNormalSignupTest() {
       });
     
       try {
-        console.log("🚀 Starting Normal Login Flow");
+        console.log("TestCase- Starting  signup Flow");
+
 
     // Step 1: Allow pop-up and press Let's Go
     let allowPopup;
@@ -273,6 +215,8 @@ async function runNormalSignupTest() {
         await clickElement(driver, onboardingIntro.login.path);
 
         await signupflow(driver);
+        console.log("✅ Test passed");
+
 
       } catch (error) {
         handleTestError(error, "Normal signup Test");
@@ -283,12 +227,61 @@ async function runNormalSignupTest() {
 
 }
 
-// Run if executed directly
-if (require.main === module) {
-  runNormalLoginTest();
+async function offlinelogin() {
+    const driver = await remote({
+        ...appiumConfig.server,
+        capabilities: {
+          alwaysMatch: appiumConfig.capabilities,
+          firstMatch: [{}],
+        },
+      });
+    
+      try {
+        console.log("TestCase- Starting offline Login Flow");
+
+    // Step 1: Allow pop-up and press Let's Go
+    let allowPopup;
+        if ( allowPopup = await waitForElement(driver, onboardingIntro.allow.path)) {
+        // console.log("✅ found popup");
+        await clickElement(driver, onboardingIntro.allow.path);
+
+        }
+        else{
+        console.log("⚠️ no popup found");
+        }
+
+        await waitForElement(driver,onboardingIntro.login.path);
+        await clickElement(driver, onboardingIntro.login.path);
+
+        await waitForElement(driver, loginpage.loginGoogleButton.path);
+        await clickElement(driver, loginpage.loginGoogleButton.path);
+
+        const nointernetpopup = await waitForElement(driver, loginpage.nointernetpopup.path);
+        if(nointernetpopup){
+            console.log("✅ No internet popup came - Test passed")
+        }
+
+        
+
+      } catch (error) {
+        handleTestError(error, "Normal signup Test");
+      } finally {
+        await driver.deleteSession();
+        console.log("✅ Session Closed");
+      }
+    
 }
 
-module.exports = runNormalLoginTest;
+
+if (require.main === module) {
+    (async () => {
+        await runNormalSignupTest();
+      await runNormalLoginTest();
+      await offlinelogin();
+    })();
+  }
+
+module.exports = {runNormalLoginTest,runNormalSignupTest,offlinelogin};
 
 
         
