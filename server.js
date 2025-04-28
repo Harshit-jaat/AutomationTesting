@@ -6,6 +6,7 @@ const { initWebSocket } = require("./websocket/wsServer");
 
 const uploadRoutes = require("./routes/upload");
 const testRoutes = require("./routes/test");
+const translationRoutes = require("./routes/translation"); 
 
 const app = express();
 
@@ -21,6 +22,7 @@ app.use(express.json()); // ✅ needed to parse JSON request bodies
 // ===== Routes =====
 app.use("/upload", uploadRoutes);
 app.use("/test", testRoutes);
+app.use("/", translationRoutes);
 const testCaseApi = require("./routes/testcases");
 
 //APIs

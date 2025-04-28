@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Find Translations</title>
+  <style>
+    body { font-family: Arial, sans-serif; padding: 20px; }
+    input, button { padding: 8px; margin: 5px; }
+    table { width: 100%; margin-top: 20px; border-collapse: collapse; }
+    th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+    pre { background: #f4f4f4; padding: 10px; margin-top: 20px; border: 1px solid #ddd; }
+  </style>
+</head>
+<body>
+
+  <h1>Translation Finder</h1>
+
+  <form method="GET" action="/translate">
+    <input type="text" name="text" placeholder="Enter English Text..." value="<%= query || '' %>" required />
+    <button type="submit">Find Translations</button>
+  </form>
+
+  <% if (translations) { %>
+    <h2>Results:</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Language</th>
+          <th>Translation</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% for (const lang in translations) { %>
+          <tr>
+            <td><%= lang %></td>
+            <td><%= translations[lang] || '❌ Not Found' %></td>
+          </tr>
+        <% } %>
+      </tbody>
+    </table>
+
+    <h2>JSON Format:</h2>
+    <pre><%= JSON.stringify(translations, null, 2) %></pre> <!-- ✅ Add this -->
+
+  <% } %>
+
+</body>
+</html>
