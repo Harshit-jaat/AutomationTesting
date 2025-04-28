@@ -3,56 +3,59 @@ const router = express.Router();
 const path = require("path");
 const oneSkyData = require(path.join(__dirname, "../strings/binogi/OneSky.json")); 
 
-// Helper function to find translations
 function findTranslations(textToFind) {
-    const result = {};
-  
-    const enTranslations = oneSkyData["en"]?.translation;
-    if (!enTranslations) {
-      throw new Error("English translations not found.");
-    }
-  
-    let matchedKey = null;
-  
-    const normalizedTextToFind = textToFind.trim().toLowerCase();
-  
-    // Step 1: Find the KEY for the given English text (case insensitive + contains)
-    function findKey(obj, parentKey = "") {
-      for (const key in obj) {
-        const fullKey = parentKey ? `${parentKey}.${key}` : key;
-        if (typeof obj[key] === "object") {
-          const found = findKey(obj[key], fullKey);
-          if (found) return found;
-        } else {
-          const value = (obj[key] || "").trim().toLowerCase();
-          if (value.includes(normalizedTextToFind)) {
-            return fullKey; // Return the full path to the matching key
-          }
+  const resultArray = []; // collect multiple matches
+
+  const enTranslations = oneSkyData["en"]?.translation;
+  if (!enTranslations) {
+    throw new Error("English translations not found.");
+  }
+
+  const normalizedTextToFind = textToFind.trim().toLowerCase();
+  const matchedKeys = [];
+
+  // Step 1: Find ALL matching keys
+  function findKeys(obj, parentKey = "") {
+    for (const key in obj) {
+      const fullKey = parentKey ? `${parentKey}.${key}` : key;
+      if (typeof obj[key] === "object") {
+        findKeys(obj[key], fullKey);
+      } else {
+        const value = (obj[key] || "").trim().toLowerCase();
+        if (value.includes(normalizedTextToFind)) {
+          matchedKeys.push(fullKey);
         }
       }
-      return null;
     }
-  
-    matchedKey = findKey(enTranslations);
-  
-    if (!matchedKey) {
-      throw new Error(`❌ No matching key found in English for text: "${textToFind}"`);
-    }
-  
-    // Step 2: Fetch the value for that key from each language
+  }
+
+  findKeys(enTranslations);
+
+  if (matchedKeys.length === 0) {
+    throw new Error(`❌ No matching keys found in English for text: "${textToFind}"`);
+  }
+
+  // Step 2: For each matched key, fetch translations from all languages
+  for (const key of matchedKeys) {
+    const result = {};
+
     for (const lang of Object.keys(oneSkyData)) {
       const translations = oneSkyData[lang]?.translation;
       if (!translations) {
         result[lang] = null;
         continue;
       }
-  
-      const value = getValueByPath(translations, matchedKey);
+
+      const value = getValueByPath(translations, key);
       result[lang] = value || null;
     }
-  
-    return result;
+
+    resultArray.push({ key, translations: result });
   }
+
+  return resultArray; // ✅ return multiple matches
+}
+
   
 
 function getValueByPath(obj, path) {

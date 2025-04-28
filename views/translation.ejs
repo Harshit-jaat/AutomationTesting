@@ -20,28 +20,33 @@
     <button type="submit">Find Translations</button>
   </form>
 
-  <% if (translations) { %>
-    <h2>Results:</h2>
-    <table>
-      <thead>
-        <tr>
-          <th>Language</th>
-          <th>Translation</th>
-        </tr>
-      </thead>
-      <tbody>
-        <% for (const lang in translations) { %>
+  <% if (translations && translations.length > 0) { %>
+    <% translations.forEach((item, index) => { %>
+      <h2>Result <%= index + 1 %>: <%= item.key %></h2>
+
+      <table>
+        <thead>
           <tr>
-            <td><%= lang %></td>
-            <td><%= translations[lang] || '❌ Not Found' %></td>
+            <th>Language</th>
+            <th>Translation</th>
           </tr>
-        <% } %>
-      </tbody>
-    </table>
+        </thead>
+        <tbody>
+          <% for (const lang in item.translations) { %>
+            <tr>
+              <td><%= lang %></td>
+              <td><%= item.translations[lang] || '❌ Not Found' %></td>
+            </tr>
+          <% } %>
+        </tbody>
+      </table>
 
-    <h2>JSON Format:</h2>
-    <pre><%= JSON.stringify(translations, null, 2) %></pre> <!-- ✅ Add this -->
+      <h3>JSON Format:</h3>
+      <pre><%= JSON.stringify(item.translations, null, 2) %></pre>
 
+    <% }); %>
+  <% } else if (query) { %>
+    <h2>No matching translations found for "<%= query %>"</h2>
   <% } %>
 
 </body>
