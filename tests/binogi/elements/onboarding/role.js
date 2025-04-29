@@ -1,6 +1,38 @@
 module.exports = {
-
-    checktext:{
+  student: {
+    "en": "Student",
+    "fr": "Élève",
+    "de": "Schüler:in",
+    "pl": "Uczeń",
+    "sv": "Elev",
+    "ar": "طالب",
+    "uk": "Студент",
+    "th": "นักเรียน",
+    "es-ES": "Estudiante"
+  },
+  teacher: {
+    "en": "Teacher",
+    "fr": "Enseignant",
+    "de": "Lehrkraft",
+    "pl": "Nauczyciel",
+    "sv": "Lärare",
+    "ar": "مدرس",
+    "uk": "Учитель",
+    "th": "คุณครู",
+    "es-ES": "Profesor"
+  },
+  guardian: {
+    "en": "Guardian",
+    "fr": "Tuteur",
+    "de": "Betreuer",
+    "pl": "Opiekun",
+    "sv": "Målsman",
+    "ar": "ولي أمر",
+    "uk": "Опікун",
+    "th": "ผู้พิทักษ์",
+    "es-ES": "Tutor"
+  },
+  checktext:{
         text1:{
             "en": "Choose your role",
             "fr": "Choisissez votre rôle",

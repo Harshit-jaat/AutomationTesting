@@ -22,6 +22,17 @@ module.exports = {
         "th": "เข้าสู่ระบบ",
         "es-ES": "Iniciar sesión"
       },
+      continue: {
+        "en": "Continue",
+        "fr": "Continuer",
+        "de": "Fortfahren",
+        "pl": "Dalej",
+        "sv": "Fortsätt",
+        "ar": "متابعة",
+        "uk": "Продовжити",
+        "th": "ดำเนินการต่อ",
+        "es-ES": "Continuar"
+      },
       checktext: {
       welcometobinogi: {
         "en": "Welcome to Binogi!",
@@ -44,6 +55,7 @@ module.exports = {
         "uk": "Щоб створити вашу особисту навчальну програму, ми поставимо вам кілька запитань.",
         "th": "เพื่อสร้างหลักสูตรส่วนตัวของคุณ เราจะถามคำถามสั้นๆ สักหน่อย",
         "es-ES": "Para crear tu plan de estudios personalizado, te haremos algunas preguntas"
-      },}
+      },},
+
 
 }

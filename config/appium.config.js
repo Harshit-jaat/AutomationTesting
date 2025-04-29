@@ -1,5 +1,5 @@
 const path = require("path");
-const { getLatestAPK, getConnectedDevice } = require("../tests/utils/helpers.js");
+const { getLatestAPK, getConnectedDevice } = require("./devicesutils");
 
 const deviceId = getConnectedDevice();
 const latestAPK = getLatestAPK();
@@ -35,8 +35,8 @@ module.exports = {
 
 //for inspector capabilities
 // {
-    // "platformName": "Android",
-    // "deviceName": "TRJDU19404007242",  
-    // "automationName": "UiAutomator2",
-    // "noReset": true
+//     "platformName": "Android",
+//     "deviceName": "TRJDU19404007242",  
+//     "automationName": "UiAutomator2",
+//     "noReset": true
 //   }

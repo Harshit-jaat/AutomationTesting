@@ -1,23 +1,35 @@
-const { initDriver, quitDriver } = require("../../../utils/helpers");
-const { click } = require("../../../utils/mainfunction"); // adjust path properly
+const { initDriver,getDriver, quitDriver } = require("../../../utils/helpers");
+const { click,typeInInput} = require("../../../utils/mainfunction"); 
+const {clickContinue,clickBack} = require("../../../utils/commonfunction");
+const {enablePlayStore,disablePlayStore} = require("../../../utils/ChangeCountry"); 
+
+
+
+const intro = require("../../elements/onboarding/intro");
+const role = require("../../elements/onboarding/role");
+const school = require("../../elements/onboarding/school");
+
 
 async function home_bottom_bar_clicks() {
-  await initDriver();
+    const driver = await initDriver();
+    await disablePlayStore();
 
   try {
-    await click("LET'S Go");
-    await click("Student");
-    await click("CONTINUE");
-    await click("Skip this question");
+    await click(intro.letsgo,{ print : true});
+    await click(role.student,{print:true});
+    clickContinue();
+    await click(school.skip,{delay: 5000});
     await click("LOWER PRIMARY SCHOOL");
     await click("4");
-    await click("CONTINUE");
+    clickContinue();
     await click("MATHEMATICS");
-    await click("CONTINUE");
+    clickContinue();
+    await enablePlayStore();
   } catch (error) {
     console.error(error);
   } finally {
     await quitDriver();
+    await enablePlayStore();
   }
 }
 
