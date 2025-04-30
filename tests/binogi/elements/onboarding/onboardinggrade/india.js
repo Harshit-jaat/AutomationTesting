@@ -7,6 +7,7 @@ module.exports = {
   schoolname:{
     path: '//android.widget.TextView[@text="Kendriya Vidyalaya No. 3, Ambala, Haryana, India"]'
   },
+  
   lowerprimaryschool: {
     text: "LOWER PRIMARY SCHOOL",
     uiauto: 'new UiSelector().description("LOWER PRIMARY SCHOOL")',
