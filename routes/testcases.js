@@ -5,7 +5,7 @@ const path = require("path");
 const router = express.Router();
 
 router.get("/", (req, res) => {
-  const testDir = path.join(__dirname, "../tests/binogi/testcases");
+  const testDir = path.join(__dirname, "../tests/gamptax/testcases");
 
   const testCases = [];
 

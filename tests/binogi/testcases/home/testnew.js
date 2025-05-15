@@ -33,9 +33,36 @@ async function home_bottom_bar_clicks() {
   }
 }
 
+async function GuardianOnboarding() {
+  await initDriver();
+
+
+  try {
+     await click(intro.letsgo,{ print : true});
+    await click(role.guardian,{print:true});
+    clickContinue();
+    await click(school.skip,{delay: 5000});
+    await click("UPPER PRIMARY SCHOOL");
+    await click("7");
+    clickContinue();
+    await click("MATHEMATICS");
+    clickContinue();
+    
+  } catch (error) {
+    console.error(error);
+  }
+  finally {
+    await quitDriver();
+  }
+  
+}
+
+
 if (require.main === module) {
   (async () => {
+   await GuardianOnboarding();
     await home_bottom_bar_clicks();
+   
   })();
 }
 
