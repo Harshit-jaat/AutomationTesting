@@ -74,13 +74,13 @@ click.full = function (textObjectOrString, { language = "en", delay = 0, print =
 };
 
 
-async function typeInInput(textObjectOrString, valueToType, { language = "en", delay = 0, print = false } = {}) {
+async function typeInInput(textObjectOrString, valueToType, { language = "de", delay = 0, print = false } = {}) {
   const driver = getDriver();
 
   // Step 1: Resolve text based on object or string
   let finalText;
   if (typeof textObjectOrString === "object" && textObjectOrString !== null) {
-    finalText = textObjectOrString[language] || textObjectOrString["en"];
+    finalText = textObjectOrString[language] || textObjectOrString["de"];
   } else {
     finalText = textObjectOrString;
   }
