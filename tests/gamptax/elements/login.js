@@ -13,5 +13,33 @@ module.exports = {
         "en": "LOGIN",
         "de": "ANMELDEN",
         "fr": "CONNEXION"
+    },
+    advisorLoginButton : {
+        "en": "Login as Tax Advisor",
+        "de" : "Als Steuerberater anmelden",
+        "fr" : "Connexion en tant que Conseiller Fiscal"
+    },
+    selectClient : {
+        "en": "Login as a Client",
+        "de" : "Als Kunde anmelden",
+        "fr" :"Connexion en tant que Client"
+    },
+    selectAdvisor : {
+        "en": "Login as Tax Advisor",
+        "de" : "Als Steuerberater anmelden",
+        "fr" :"Connexion en tant que Conseiller Fiscal"
+    },
+    logout : {
+        "en": "Logout",
+        "de" : "Abmelden",
+        "fr" :"Déconnexion"
+    },
+    forgetpassword : {
+        "en" : "Forgot Password?",
+        "de" :"Passwort vergessen",
+        "fr" :"Entrez le Mot de Passe"
     }
+
+
+
 }

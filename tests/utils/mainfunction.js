@@ -1,6 +1,6 @@
 const { getDriver } = require("./helpers"); 
 
-async function click(textObjectOrString, { language = "en", delay = 100, print = false } = {}) {
+async function click(textObjectOrString, { language = "de", delay = 100, print = false } = {}) {
   const driver = getDriver();
 
   // Step 1: Resolve text based on object or string
