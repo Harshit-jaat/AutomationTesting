@@ -16,9 +16,9 @@ async function loginUser(email, password, language = "de") {
     await typeInInput(login.email, email, { language, print: true });
     await typeInInput(login.password, password, { language, print: true });
     await click(login.loginButton, { language, print: true });
-    await logout(driver);
-    await click(login.logout, {language, print : true});
-    await driver.pause();
+    // await logout(driver);
+    // await click(login.logout, {language, print : true});
+   
     
 
 
@@ -26,9 +26,7 @@ async function loginUser(email, password, language = "de") {
 
   } catch (error) {
     console.log(error);
-  } finally {
-    await quitDriver();
-  }
+  } 
 
 }
 

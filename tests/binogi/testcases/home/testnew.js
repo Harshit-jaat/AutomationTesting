@@ -10,7 +10,7 @@ const role = require("../../elements/onboarding/role");
 const school = require("../../elements/onboarding/school");
 
 
-async function home_bottom_bar_clicks() {
+async function StudentOnboarding() {
     const driver = await initDriver();
     await disablePlayStore();
 
@@ -19,10 +19,10 @@ async function home_bottom_bar_clicks() {
     await click(role.student,{print:true});
     clickContinue();
     await click(school.skip,{delay: 5000});
-    await click("LOWER PRIMARY SCHOOL");
-    await click("4");
+    await click("LOWER PRIMARY SCHOOL", {print : true});
+    await click("4", {print :true});
     clickContinue();
-    await click("MATHEMATICS");
+    await click("MATHEMATICS", {print : true});
     clickContinue();
     await enablePlayStore();
   } catch (error) {
@@ -45,7 +45,7 @@ async function GuardianOnboarding() {
     await click("UPPER PRIMARY SCHOOL");
     await click("7");
     clickContinue();
-    await click("MATHEMATICS");
+    await click("BIOLOGY");
     clickContinue();
     
   } catch (error) {
@@ -57,11 +57,23 @@ async function GuardianOnboarding() {
   
 }
 
+async function TeacherOnboarding(){
+  await initDriver;
+  try {
+
+  await click(intro.letsgo, {print : true});
+
+    
+  } catch (error) {
+    
+  }
+}
+
 
 if (require.main === module) {
   (async () => {
    await GuardianOnboarding();
-    await home_bottom_bar_clicks();
+    await StudentOnboarding();
    
   })();
 }

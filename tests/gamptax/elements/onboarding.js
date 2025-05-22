@@ -1,21 +1,26 @@
-module.export = {
+module.exports = {
+    continueButton: {
+        "en": "CONTINUE",
+        "de": "WEITERMACHEN",
+        "fr": "CONTINUER"
+    },
     Screen1: {
         companyType: {
             "en": "Professional Status",
             "de": "Berufsstatus",
             "fr": "Statut professionnel",
-
-            privateperson :{
-                "en" : "Private",
-                "de" : "Privat",
-                "fr" : "Privé"
-            },
-            business : {
-                "en" : "Business",
-                "de" : "Geschäftlich",
-                "fr" : "Professionnel"
-            }
         },
+        privateperson: {
+            "en": "Private",
+            "de": "Privat",
+            "fr": "Privé"
+        },
+        business: {
+            "en": "Business",
+            "de": "Geschäftlich",
+            "fr": "Professionnel"
+        },
+
         firstName: {
             "en": "First Name",
             "de": "Vorname",
@@ -35,15 +40,91 @@ module.export = {
             "en": "Marital Status",
             "de": "Familienstand",
             "fr": "État Civil",
-            married : {
+            married: {
+                "en": "",
+                "de": "Verheiratet",
+                "fr": ""
+            },
+            single: {
+                "en": "Ledig",
+                "de": "",
+                "fr": ""
+
+            },
+            divorced: {
+                "en": "",
+                "de": "Geschieden",
+                "fr": ""
+
+            },
+            widowed: {
+                "en": "",
+                "de": "Verwitwet",
+                "fr": ""
 
             }
-            
         },
         profilePic: {
             "en": "",
             "de": "",
             "fr": ""
         }
+
+    },
+    Screen2: {
+        Email: {
+            "en": "Email Id",
+            "de": "Email-Adresse",
+            "fr": "Identifiant Email",
+        },
+        mobileNo: {
+            "en": "mobile (please add country code also)",
+            "de": "Mobil (bitte auch Ländervorwahl hinzufügen)",
+            "fr": "mobile (veuillez ajouter le code du pays également)",
+
+        },
+        telephoneNo: {
+            "en": "",
+            "de": "Festnetznummer (freiwillig)",
+            "fr": "",
+        },
+        street: {
+            "en": "",
+            "de": "Straße",
+            "fr": "",
+
+        },
+        town: {
+            "en": "",
+            "de": "Stadt",
+            "fr": "",
+        },
+        postalCode: {
+            "en": "",
+            "de": "Postleitzahl",
+            "fr": "",
+        },
+        idFront: {
+            "en": "",
+            "de": "",
+            "fr": "",
+        },
+        idBack: {
+            "en": "",
+            "de": "",
+            "fr": "",
+        },
+        usecamera : {
+          "en": "",
+            "de": "Kamera verwenden",
+            "fr": "",  
+        },
+        useGallery : {
+            "en": "",
+            "de": "Aus Galerie auswählen",
+            "fr": "",
+        }
+
     }
+
 }
