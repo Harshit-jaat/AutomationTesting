@@ -80,8 +80,45 @@ async function OnboardingTest(language = "de") {
 
 
 
-    await driver.pause(2000);
+    // await driver.pause(2000);
 
+
+    // Screen 2 :- TAX information
+    const idNum = faker.number.bigInt({ min: 1000n, max: 9999n });
+  const TaxOffice = faker.person.jobTitle();
+  const TaxNum =faker.number.int();
+  const Denomination = faker.finance.accountNumber();
+
+
+
+    await typeInInput(onboarding.Screen3.idnumber, idNum, {language, print : true});
+    await typeInInput(onboarding.Screen3.TaxOffice,TaxOffice, { language, print : true} );
+    await typeInInput(onboarding.Screen3.TaxNum, TaxNum, { language, print : true});
+    await typeInInput(onabording.Screen3.Denomination, Denomination, {lanague});
+
+    const SpouseFirstName = faker.person.firstName();
+    const SpouseLastName = faker.person.lastName();
+    const SpouseIdNum = faker.number.bigInt({ min: 1000n, max: 9999n });
+    const SpouseDenomination = faker.word.words();
+    const spousetaxnum = faker.number.bigInt({min :1000n, max : 9999n});
+
+    
+
+    //Screen 4 :- Spouse Information 
+    await typeInInput(onboarding.Screen4.spouseFirstName, SpouseFirstName, {language} );
+    await typeInInput(onboarding.Screen4.spouseLastName, SpouseLastName, {language});
+    await click(onboarding.Screen4.spouseDOB, {language});
+    await click(onboarding.Screen4.idNum, SpouseIdNum, {language});
+    await typeInInput(onboarding.Screen4.spouseDenomination,SpouseDenomination, {language});
+    await click(onboarding.Screen4.spouseGender , {language});
+    await click(onboarding.Screen4.spouseGender.male);
+    await typeInInput(onboarding.Screen4.spouseTaxNum, spousetaxnum,{language});
+    await click(onboarding.continueButton);
+
+
+    // Screen 5 children screen  
+
+    
 
   }
   catch (error) {
