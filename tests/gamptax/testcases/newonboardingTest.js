@@ -36,20 +36,23 @@ const cost = faker.number.float();
 
 
 async function RegisterAsPrivateUser(language = "de") {
-     await getDriver();
-await loginUser("testautothree@dev.in", "123456");
+    const driver =  await getDriver();
+await loginUser("testautofour@dev.in", "123456");
 
     try {
-     const el1 = await driver.$("id:android:id/button1");
+    
         await click(onboarding.Screen1.companyType, {language});
         await click(onboarding.Screen1.privateperson, {language});
         await typeInInput(onboarding.Screen1.firstName, firstname, {language});
         await typeInInput(onboarding.Screen1.lastName, lastname, {language});
         await click(onboarding.Screen1.DOB, {language});
-        console.log("✅✅✅")
-        await el1.click();
-        console.log("123✅✅✅")
-        console.log("✅✅✅456")
+        console.log("✅✅✅");
+        driver.pause(1000);
+        console.log("123✅✅✅");
+        const ok = await driver.$("id:android:id/button1"); 
+        console.log("123✅✅✅");
+        await ok.click(); 
+        console.log("✅✅✅456");
         await click(onboarding.Screen1.maritalStatus, {language});
         await click(onboarding.Screen1.maritalStatus.married);
         await click(onboarding.continueButton, {language});
@@ -60,7 +63,7 @@ await loginUser("testautothree@dev.in", "123456");
     }
 }
 async function ContactInfo(language = "de") {
-    await getDriver();
+   const driver =  await getDriver();
     try {
         await typeInInput(onboarding.Screen2.Email, email, { language, });
         await typeInInput(onboarding.Screen2.mobileNo, mobile, { language, });
@@ -111,7 +114,6 @@ async function SpouseInfo(language = "de") {
         await typeInInput(onboarding.Screen4.spouseFirstName, firstname, { language, });
         await typeInInput(onboarding.Screen4.spouseLastName, lastname, { language, });
         await click(onboarding.Screen4.spouseDOB, { language });
-        await ok.click();
         await typeInInput(onboarding.Screen4.spouseIdentificationNum, idNum, { language, });
         await typeInInput(onboarding.Screen4.spouseDenomination, randomwords, { language });
         await click(onboarding.Screen4.spouseGender, { language });
@@ -131,7 +133,6 @@ await typeInInput(onboarding.Screen5.childFirstName, firstname, {   language });
     await typeInInput(onboarding.Screen5.childLastName, lastname, { language });
     await typeInInput(onboarding.Screen5.ChildIdNumber, idNum, { language });
     await click(onboarding.Screen5.childDOB);
-    await ok.click();
     await click(onboarding.Screen5.childGender, { language });
     await click(onboarding.Screen5.childGender.male, { language });
     await click(onboarding.continueButton);
@@ -164,7 +165,6 @@ async function companyaddress(language = "de") {
         await typeInInput(onboarding.Screen7.corporteObject, randomwords, { language });
         await typeInInput(onboarding.Screen7.vatNum, idNum, { language });
         await click(onboarding.Screen7.foundationDate);
-        await ok.click();
         console.log("✅✅✅Screen 7 Completed");
 
     } catch (error) {
@@ -192,7 +192,6 @@ async function legalRepresentative(language = "de") {
         await typeInInput(onboarding.Screen9.emailAddress, email, { language });
         await typeInInput(onboarding.Screen9.telephoneNum, telephone, { language });
         await click(onboarding.Screen9.DobSigning, { language });
-        await ok.click();
         await click(onboarding.continueButton);
         console.log("✅✅✅Screen 9 Completed");
 
@@ -220,15 +219,16 @@ async function Offercreation(){
 
 async function Onboarding1() {
     const driver = await initDriver();
+   
     try{
- 
+const lg = "de";
 await RegisterAsPrivateUser();
 await ContactInfo();
-await click(onboarding.continueButton); // Tax Information Screen 
-await click(onboarding.continueButton); // Spouse Details Screen 
-await click(onboarding.continueButton); // Children Details Screen
-await click(onboarding.continueButton); // Bank Details 
-await click(onboarding.continueButton);// Legal Representative
+await click(onboarding.continueButton, lg); // Tax Information Screen 
+await click(onboarding.continueButton, lg); // Spouse Details Screen 
+await click(onboarding.continueButton, lg); // Children Details Screen
+await click(onboarding.continueButton, lg ); // Bank Details 
+await click(onboarding.continueButton, lg );// Legal Representative
 
 
 
