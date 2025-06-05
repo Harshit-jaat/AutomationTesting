@@ -1,18 +1,20 @@
 const { initDriver, getDriver, quitDriver } = require("../../utils/helpers");
 const { click, typeInInput } = require("../../utils/mainfunction");
 const { clickContinue, clickBack } = require("../../utils/commonfunction");
-const {
-    enablePlayStore,
-    disablePlayStore,
-} = require("../../utils/ChangeCountry");
-const { type } = require("os");
+const { enablePlayStore, disablePlayStore } = require("../../utils/ChangeCountry");
+
+const { loginUser, loginAdvisor } = require("./gamptest");
+
 const login = require("../elements/login");
 const onboarding = require("../elements/onboarding");
-const { loginUser, loginAdvisor } = require("./gamptest");
+
+const { type } = require("os");
 const { error } = require("console");
-const { faker } = require("@faker-js/faker");
 const { on } = require("events");
-const { OnboardingTest } = require("./OnboardingTest");
+const { futimesSync } = require("fs");
+
+const { faker } = require("@faker-js/faker");
+
 const firstname = faker.person.firstName();
 const lastname = faker.person.lastName();
 const email = faker.internet.email();
@@ -25,7 +27,6 @@ const idNum = faker.number.bigInt({ min: 1000n, max: 9999n }).toString();
 const Taxoffice = faker.person.jobTitle();
 const TaxNum = faker.number.bigInt({ min: 1000n, max: 9999n }).toString();
 const denomination = faker.number.bigInt({ min: 1000n, max: 9999n }).toString();
-const ok = await driver.$("id:android:id/button1");
 const randomwords = faker.word.words();
 const intAccount = faker.number.bigInt({ min: 1000n, max: 9999n }).toString();
 const cost = faker.number.float();
@@ -36,17 +37,22 @@ const cost = faker.number.float();
 
 async function RegisterAsPrivateUser(language = "de") {
      await getDriver();
+await loginUser("testautothree@dev.in", "123456");
+
     try {
-        await loginUser("user7451@dev.in", "user7451@123");
-        await click(onboarding.Screen1.companyType, { language, });
-        await click(onboarding.Screen1.privateperson, { language, });
-        await typeInInput(onboarding.Screen1.firstName, firstname, { language, });
-        await typeInInput(onboarding.Screen1.lastName, lastname, { language, });
-        await click(onboarding.Screen1.DOB, { language: "de" });
-        await ok.click();
-        await click(onboarding.Screen1.maritalStatus, { language, });
+     const el1 = await driver.$("id:android:id/button1");
+        await click(onboarding.Screen1.companyType, {language});
+        await click(onboarding.Screen1.privateperson, {language});
+        await typeInInput(onboarding.Screen1.firstName, firstname, {language});
+        await typeInInput(onboarding.Screen1.lastName, lastname, {language});
+        await click(onboarding.Screen1.DOB, {language});
+        console.log("✅✅✅")
+        await el1.click();
+        console.log("123✅✅✅")
+        console.log("✅✅✅456")
+        await click(onboarding.Screen1.maritalStatus, {language});
         await click(onboarding.Screen1.maritalStatus.married);
-        await click(onboarding.continueButton, { language, });
+        await click(onboarding.continueButton, {language});
         console.log("✅✅✅✅First Screen Completed")
 
     } catch (error) {
@@ -212,26 +218,34 @@ async function Offercreation(){
 }
 
 
+async function Onboarding1() {
+    const driver = await initDriver();
+    try{
+ 
+await RegisterAsPrivateUser();
+await ContactInfo();
+await click(onboarding.continueButton); // Tax Information Screen 
+await click(onboarding.continueButton); // Spouse Details Screen 
+await click(onboarding.continueButton); // Children Details Screen
+await click(onboarding.continueButton); // Bank Details 
+await click(onboarding.continueButton);// Legal Representative
 
+
+
+
+}catch(error){
+        console.log(error);
+    }
+    
+}
 
 
 
 
 if (require.main === module) {
     (async () => {
-        await RegisterAsPrivateUser();
-        await ContactInfo();
-        await TaxInfo();
-        await SpouseInfo();
-        await Bankdetails();
-        await companyaddress();
-        await companydetails();
-        await legalRepresentative();
+       await Onboarding1();
         
-
-
-
-
     })();
 }
 
@@ -240,12 +254,13 @@ module.exports = {
     ContactInfo,
     TaxInfo,
     SpouseInfo,
-    
+    ChildInfo,
     Bankdetails,
     companyaddress,
     companydetails,
     legalRepresentative,
-    Offercreation
+    Offercreation,
+    Onboarding1
 
 
 };

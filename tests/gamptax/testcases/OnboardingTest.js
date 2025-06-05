@@ -1,4 +1,5 @@
 const { initDriver, getDriver, quitDriver } = require("../../utils/helpers");
+
 const { click, typeInInput } = require("../../utils/mainfunction");
 const { clickContinue, clickBack } = require("../../utils/commonfunction");
 const {
@@ -14,7 +15,7 @@ const { faker } = require("@faker-js/faker");
 const { on } = require("events");
 
 async function OnboardingTest(language = "de") {
-  await loginUser("user7451@dev.in", "user7451@123");
+  await loginUser("gojo@dev.in", "gojo@123");
   const firstname = faker.person.firstName();
   const lastname = faker.person.lastName();
   const email = faker.internet.email();
