@@ -37,7 +37,7 @@ const cost = faker.number.float();
 
 async function RegisterAsPrivateUser(language = "de") {
     const driver =  await getDriver();
-await loginUser("testautofour@dev.in", "123456");
+await loginUser("auto09@dev.in", "123456");
 
     try {
     
@@ -217,18 +217,40 @@ async function Offercreation(){
 }
 
 
-async function Onboarding1() {
+async function Onboarding1(language = "de") {
     const driver = await initDriver();
    
     try{
-const lg = "de";
+// const lg = "de";
 await RegisterAsPrivateUser();
 await ContactInfo();
-await click(onboarding.continueButton, lg); // Tax Information Screen 
-await click(onboarding.continueButton, lg); // Spouse Details Screen 
-await click(onboarding.continueButton, lg); // Children Details Screen
-await click(onboarding.continueButton, lg ); // Bank Details 
-await click(onboarding.continueButton, lg );// Legal Representative
+// driver.pause(2000);
+// await click(onboarding.continueButton, {language}); // Tax Information Screen 
+// console.log("✅✅ButtonCliked");
+// driver.pause(2000);
+// await click(onboarding.continueButton, {language}); // Spouse Details Screen 
+// console.log("✅✅ButtonCliked");
+// driver.pause(3000);
+// await click(onboarding.continueButton, {language}); // Children Details Screen
+// console.log("✅✅ButtonCliked");
+// driver.pause(3000);
+// await click(onboarding.continueButton, {language}); // Bank Details 
+// console.log("✅✅ButtonCliked");
+// driver.pause(3000);
+// await click(onboarding.continueButton, {language});// Legal Representative
+// console.log("✅✅ButtonCliked");
+// driver.pause(3000);
+
+// const el11 = await driver.$("accessibility id:WEITERMACHEN");
+// await el11.click();
+// const el22 = await driver.$("accessibility id:WEITERMACHEN");
+// await el22.click();
+// const el33 = await driver.$("accessibility id:WEITERMACHEN");
+// await el33.click();
+// const el44 = await driver.$("accessibility id:WEITERMACHEN");
+// await el44.click();
+// const el55 = await driver.$("accessibility id:WEITERMACHEN");
+// await el55.click();
 
 
 
