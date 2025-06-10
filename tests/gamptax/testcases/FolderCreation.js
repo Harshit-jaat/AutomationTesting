@@ -23,23 +23,65 @@ const foldername = faker.word.words();
 
 async function Reciept(language = "de") {
     const driver = await getDriver();
-    await loginUser("auto09@dev.in", "123456");
+
     try {
         const menu = await driver.$("-android uiautomator:new UiSelector().text(\"\")");
         await menu.click();
         console.log("Menu Opened Sucessfully ✅")
         await click(Menu.taxDocument, { language });
         console.log("Reciepts opened Sucesfully ✅✅")
-        // driver.pause(2000)
-        // const plusicon = await driver.$("accessibility id:");
-        // console.log("varaiable for Add icon created Successfully ✅✅✅")
-        //   driver.pause(2000)
-        //   await plusicon.click();
+        await driver.pause(1000);
+        const pageSource = await driver.getPageSource();
+        console.log(pageSource);
 
-        const plusicon = await driver.$("-android uiautomator:new UiSelector().text(\"\")");
-        await plusicon.click();
-        console.log("Clicked on the Add icon Sucessfully")
-        await click(Menu.createFolder, { language });
+
+        const plusIcons = await driver.$$('accessibility id:');
+        console.log(`✅✅✅✅Found ${plusIcons.length} elements with ''`);
+
+        for (let i = 0; i < plusIcons.length; i++) {
+            const el = plusIcons[i];
+            const displayed = await el.isDisplayed();
+            const bounds = await el.getAttribute("bounds");
+            const clickable = await el.getAttribute("clickable");
+
+            console.log(` ✅✅✅✅✅Index: ${i}, displayed: ${displayed}, clickable: ${clickable}, bounds: ${bounds}`);
+        }
+
+        // const el1 = await driver.$("accessibility id:");
+        // await el1.waitForDisplayed({ timeout: 5000 });
+        // await el1.click();
+        // console.log("✅ Tapped Add icon using accessibility id sucessfully)");
+        const plusIcon = await driver.$('//android.widget.TextView[contains(@text,"")]');
+        await plusIcon.waitForDisplayed({ timeout: 3000 });
+        await plusIcon.click();
+        console.log("✅ Successfully clicked the Add () icon 🎯");
+
+        await driver.pause(2000); // allow transition
+        await click(Menu.createFolder, { language })
+        await driver.pause(2000);
+        const el2 = await driver.$("class name:android.widget.EditText");
+        await el2.click();
+        console.log("✅clicked the element sucessfully")
+        // await el2.clearvalue();
+
+        // console.log("✅✅cleared the field successfully")
+
+        //  await typeInInput(el2, foldername,{language});
+
+        await click(Menu.createFolder.create, { language });
+        console.log("✅Folder created sucessfuly");
+        // const editoption = await driver.$("-android uiautomator:new UiSelector().text(\"\")");
+        // await editoption.click();
+        // const deleteoption = await driver.$("accessibility id:, Löschen");
+        // await deleteoption.click();
+        // const confirmdelete = await driver.$("id:android:id/button1");
+        // await confirmdelete.click();
+        // await driver.pause(5000);
+
+
+
+
+
 
 
     } catch (error) {
@@ -48,11 +90,42 @@ async function Reciept(language = "de") {
 
 }
 
+
+async function BankStatements(language) {
+    const driver = await getDriver();
+    console.log("✅✅✅");
+    try {
+        console.log("✅✅✅✅✅");
+        const menu1 = await driver.$("-android uiautomator:new UiSelector().text(\"\")");
+        console.log("✅✅✅✅✅");
+        await menu1.click();
+        console.log("✅✅✅✅✅");
+        console.log("Menu Opened Sucessfully ✅")
+        await click(Menu.bankStatements, { language });
+        console.log("Tools opened Sucesfully ✅✅")
+        await driver.pause(1000);
+    }
+    catch (error) {
+
+    }
+
+}
+
 async function MenuSelection(language = "de") {
     const driver = await initDriver();
+    await loginUser("auto09@dev.in", "123456");
 
     try {
         await Reciept();
+        await driver.pause(1000);
+        await driver.terminateApp("com.agp.app");
+        console.log("✅✅App closed successfuly")
+        // await driver.pause(2000);
+        // const el1 = await driver.$('//android.widget.TextView[contains(@text,""]');
+        // await el1.click();
+        // await driver.pause(2000);
+        console.log("✅✅✅Bank Statement function started running.");
+        await BankStatements();
 
     } catch (error) {
 
@@ -71,4 +144,5 @@ if (require.main === module) {
 module.exports = {
     MenuSelection,
     Reciept,
+
 }
