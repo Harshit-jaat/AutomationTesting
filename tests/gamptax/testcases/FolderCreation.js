@@ -59,17 +59,20 @@ async function Reciept(language = "de") {
         await driver.pause(2000); // allow transition
         await click(Menu.createFolder, { language })
         await driver.pause(2000);
-        const el2 = await driver.$("class name:android.widget.EditText");
+        const el2 = await driver.$("android.widget.EditText");
         await el2.click();
-        console.log("✅clicked the element sucessfully")
-        // await el2.clearvalue();
-
+        await el2.clearValue();
+        await driver.pause(500);
+        await el2.setValue(foldername);
+        console.log("✅ Tried setValue directly");
         // console.log("✅✅cleared the field successfully")
 
         //  await typeInInput(el2, foldername,{language});
 
         await click(Menu.createFolder.create, { language });
         console.log("✅Folder created sucessfuly");
+        await driver.pause(5000);
+
         // const editoption = await driver.$("-android uiautomator:new UiSelector().text(\"\")");
         // await editoption.click();
         // const deleteoption = await driver.$("accessibility id:, Löschen");
@@ -93,20 +96,36 @@ async function Reciept(language = "de") {
 
 async function BankStatements(language) {
     const driver = await getDriver();
-    console.log("✅✅✅");
+
     try {
-        console.log("✅✅✅✅✅");
         const menu1 = await driver.$("-android uiautomator:new UiSelector().text(\"\")");
-        console.log("✅✅✅✅✅");
         await menu1.click();
-        console.log("✅✅✅✅✅");
         console.log("Menu Opened Sucessfully ✅")
         await click(Menu.bankStatements, { language });
         console.log("Tools opened Sucesfully ✅✅")
         await driver.pause(1000);
+        const addIcon = await driver.$("-android uiautomator:new UiSelector().text(\"\")");
+        await addIcon.waitForDisplayed({ timeout: 3000 });
+        await addIcon.click();
+      
+
+        console.log("✅ Successfully clicked the Add () icon 🎯");
+
+        await driver.pause(2000); // allow transition
+        await click(Menu.createFolder, { language })
+        await driver.pause(2000);
+        const el2 = await driver.$("android.widget.EditText");
+        await el2.click();
+        await el2.clearValue();
+        await driver.pause(500);
+        await el2.setValue(foldername);
+        console.log("✅ Tried setValue directly");
+        await click(Menu.createFolder.create, { language });
+        console.log("✅Folder created sucessfuly");
+        await driver.pause(5000);
     }
     catch (error) {
-
+        console.error("❌ Error in BankStatements:", error);
     }
 
 }
@@ -117,8 +136,9 @@ async function MenuSelection(language = "de") {
 
     try {
         await Reciept();
-        await driver.pause(1000);
         await driver.terminateApp("com.agp.app");
+        await driver.activateApp("com.agp.app");
+        await driver.pause(2000);
         console.log("✅✅App closed successfuly")
         // await driver.pause(2000);
         // const el1 = await driver.$('//android.widget.TextView[contains(@text,""]');
