@@ -25,5 +25,10 @@ module.exports = {
         "en" : "Tools",
         "fr" : "Outils",
         "de" : "Arbeitshilfen"
+        },
+        Invoices : {
+            "en" : "Work Aid",
+            "fr" : "Aide au travail",
+            "de" : "Mandantenkonto"
         }
 }
