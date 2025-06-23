@@ -15,16 +15,21 @@ const Settings = require("../elements/Settings");
 
 async function ChangeLanguage(language = "de") {
     const driver = await initDriver();
-    await loginUser("auto09@dev.in", "123456");
+    console.log("✅Session Started successfully.")
+    await loginUser("testautotwo@dev.in", "123456");
     try {
         const menu = await driver.$("-android uiautomator:new UiSelector().text(\"\")");
         await menu.click();
         await click(Settings.settings, { language });
         await click(Settings.changeLanguage, { language });
-        await click(Settings.Languages, {language : "en"});
+        await click(Settings.Languages, { language: "en" });
         console.log("✅Language changed successfully.")
     } catch (error) {
         console.log(error);
+    }
+      finally {
+        await quitDriver();
+        console.log("✅Session Quited successfully.")
     }
 }
 

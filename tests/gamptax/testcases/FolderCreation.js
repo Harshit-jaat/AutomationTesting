@@ -27,9 +27,9 @@ async function Reciept(language = "de") {
     try {
         const menu = await driver.$("-android uiautomator:new UiSelector().text(\"\")");
         await menu.click();
-        console.log("Menu Opened Sucessfully ✅")
+        // console.log("Menu Opened Sucessfully ✅")
         await click(Menu.taxDocument, { language });
-        console.log("Reciepts opened Sucesfully ✅✅")
+        //  
         await driver.pause(1000);
         const pageSource = await driver.getPageSource();
         console.log(pageSource);
@@ -99,8 +99,8 @@ async function BankStatements(language) {
 
     try {
         const menu1 = await driver.$("-android uiautomator:new UiSelector().text(\"\")");
-        await menu1.click();
-        console.log("Menu Opened Sucessfully ✅")
+        // await menu1.click();
+        // console.log("Menu Opened Sucessfully ✅")
         await click(Menu.bankStatements, { language });
         console.log("Tools opened Sucesfully ✅✅")
         await driver.pause(3000);
@@ -134,7 +134,7 @@ async function BankStatements(language) {
         await el2.clearValue();
         await driver.pause(500);
         await el2.setValue(foldername);
-        console.log("✅ Tried setValue directly");
+        // console.log("✅ Tried setValue directly");
         await click(Menu.createFolder.create, { language });
         console.log("✅Folder created sucessfuly");
         await driver.pause(5000);
@@ -150,9 +150,9 @@ async function Invoices(language = "de") {
     try {
         const menu1 = await driver.$("-android uiautomator:new UiSelector().text(\"\")");
         await menu1.click();
-        console.log("Menu Opened Sucessfully ✅")
+        // console.log("Menu Opened Sucessfully ✅")
         await click(Menu.Invoices, { language });
-        console.log("Tools opened Sucesfully ✅✅")
+        console.log("Invoice opened Sucesfully ✅✅")
         await driver.pause(3000);
         const plusIcon = await driver.$('//android.widget.TextView[contains(@text,"")]');
         await plusIcon.waitForDisplayed({ timeout: 5000 });
@@ -164,7 +164,7 @@ async function Invoices(language = "de") {
         await el2.clearValue();
         await driver.pause(500);
         await el2.setValue(foldername);
-        console.log("✅ Tried setValue directly");
+        // console.log("✅ Tried setValue directly");
         await click(Menu.createFolder.create, { language });
         console.log("✅Folder created sucessfuly");
         await driver.pause(5000);
@@ -177,7 +177,7 @@ async function Invoices(language = "de") {
 
 async function MenuSelection(language = "de") {
     const driver = await initDriver();
-    await loginUser("auto09@dev.in", "123456");
+    await loginUser("testautotwo@dev.in", "123456");
 
     try {
         await Reciept();
@@ -189,10 +189,14 @@ async function MenuSelection(language = "de") {
         await driver.activateApp("com.agp.app");
         await driver.pause(2000);
         await Invoices();
-         console.log("✅✅✅Folder Created in Reciepts, Work-Aid and Tools sucessfully");
+         console.log("✅✅✅Folder Created in Reciepts, Tools and Work-Aid sucessfully");
 
     } catch (error) {
 
+    }
+    finally {
+        await quitDriver();
+        console.log("✅Session Quited successfully.")
     }
 
 }
@@ -208,5 +212,7 @@ if (require.main === module) {
 module.exports = {
     MenuSelection,
     Reciept,
+    BankStatements,
+    Invoices
 
 }

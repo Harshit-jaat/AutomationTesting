@@ -37,7 +37,7 @@ const cost = faker.number.float();
 
 async function RegisterAsPrivateUser(language = "de") {
     const driver =  await getDriver();
-await loginUser("auto09@dev.in", "123456");
+
 
     try {
     
@@ -219,27 +219,27 @@ async function Offercreation(){
 
 async function Onboarding1(language = "de") {
     const driver = await initDriver();
-   
+   await loginUser("katy@dev.in", "123456");
     try{
 // const lg = "de";
 await RegisterAsPrivateUser();
 await ContactInfo();
-// driver.pause(2000);
-// await click(onboarding.continueButton, {language}); // Tax Information Screen 
-// console.log("✅✅ButtonCliked");
-// driver.pause(2000);
-// await click(onboarding.continueButton, {language}); // Spouse Details Screen 
-// console.log("✅✅ButtonCliked");
-// driver.pause(3000);
-// await click(onboarding.continueButton, {language}); // Children Details Screen
-// console.log("✅✅ButtonCliked");
-// driver.pause(3000);
-// await click(onboarding.continueButton, {language}); // Bank Details 
-// console.log("✅✅ButtonCliked");
-// driver.pause(3000);
-// await click(onboarding.continueButton, {language});// Legal Representative
-// console.log("✅✅ButtonCliked");
-// driver.pause(3000);
+driver.pause(2000);
+await click(onboarding.continueButton, {language}); // Tax Information Screen 
+console.log("✅✅ButtonCliked");
+driver.pause(2000);
+await click(onboarding.continueButton, {language}); // Spouse Details Screen 
+console.log("✅✅ButtonCliked");
+driver.pause(3000);
+await click(onboarding.continueButton, {language}); // Children Details Screen
+console.log("✅✅ButtonCliked");
+driver.pause(3000);
+await click(onboarding.continueButton, {language}); // Bank Details 
+console.log("✅✅ButtonCliked");
+driver.pause(3000);
+await click(onboarding.continueButton, {language});// Legal Representative
+console.log("✅✅ButtonCliked");
+driver.pause(3000);
 
 // const el11 = await driver.$("accessibility id:WEITERMACHEN");
 // await el11.click();

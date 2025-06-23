@@ -19,7 +19,7 @@ const BugDescription = faker.word.words();
 
 async function BugReport(language = "de") {
      const driver = await initDriver();
-    await loginUser("auto09@dev.in", "123456");
+    await loginUser("testautotwo@dev.in", "123456");
     try {
         const menu = await driver.$("-android uiautomator:new UiSelector().text(\"\")");
         await menu.click();
@@ -34,13 +34,17 @@ async function BugReport(language = "de") {
     catch(error){
         console.log(error);
     }
-    
+      finally {
+        await quitDriver();
+        console.log("✅Session Quited successfully.")
+    }
 }
     if (require.main === module) {
         (async () => {
            await BugReport()
         })();
     }
+    
 
     module.exports = {
         BugReport
